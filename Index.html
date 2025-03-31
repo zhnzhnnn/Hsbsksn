@@ -3,34 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой Telegram Mini App</title>
+    <title>Угадай число</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-        }
+        body { text-align: center; font-family: Arial, sans-serif; padding: 20px; }
+        input { font-size: 18px; padding: 10px; margin: 10px; }
+        button { font-size: 18px; padding: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h1>Привет, Telegram!</h1>
-    <p id="username">Загрузка...</p>
-    <button onclick="sendMessage()">Отправить сообщение</button>
+    <h1>Угадай число!</h1>
+    <p>Я загадал число от 1 до 100. Попробуй угадать!</p>
+    <input type="number" id="guess" placeholder="Введи число">
+    <button onclick="checkNumber()">Проверить</button>
+    <p id="result"></p>
+    <button onclick="sendResult()">Отправить результат боту</button>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Развернуть приложение на весь экран
+        let secretNumber = Math.floor(Math.random() * 100) + 1;
 
-        document.getElementById("username").innerText = `Привет, ${tg.initDataUnsafe.user.first_name}`;
+        function checkNumber() {
+            let guess = parseInt(document.getElementById("guess").value);
+            let resultText = "";
 
-        function sendMessage() {
-            tg.sendData("Это сообщение от мини-приложения!");
+            if (isNaN(guess)) {
+                resultText = "Введите число!";
+            } else if (guess < secretNumber) {
+                resultText = "Мое число больше!";
+            } else if (guess > secretNumber) {
+                resultText = "Мое число меньше!";
+            } else {
+                resultText = "Поздравляю, ты угадал! 🎉";
+            }
+
+            document.getElementById("result").innerText = resultText;
         }
+
+        function sendResult() {
+            let message = document.getElementById("result").innerText;
+            tg.sendData(message);  // Отправляем результат в Telegram
+        }
+
+        tg.expand(); // Разворачиваем мини-апп на весь экран
     </script>
 </body>
 </html>
